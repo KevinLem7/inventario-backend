@@ -1,0 +1,17 @@
+{
+    "01": {
+        "nombre": "test 01",
+        "precio": 658.66,
+        "stock": 6
+    },
+    "02": {
+        "nombre": "test 02",
+        "precio": 98.99,
+        "stock": 1
+    },
+    "03": {
+        "nombre": "test 03",
+        "precio": 10.0,
+        "stock": 6
+    }
+}

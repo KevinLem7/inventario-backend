@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Inventario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        nav {
+            background: white;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav li {
+            margin: 0;
+        }
+
+        nav a {
+            display: block;
+            padding: 15px 20px;
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+        }
+
+        nav a:hover {
+            background: #f0f0f0;
+            color: #764ba2;
+            border-bottom-color: #667eea;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        section {
+            background: white;
+            margin: 30px 0;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            color: #667eea;
+            font-size: 1.2em;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #fff;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .feature-card h4 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .requirements {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+            margin: 20px 0;
+        }
+
+        .requirements h4 {
+            margin-top: 0;
+        }
+
+        .requirements ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .requirements li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .requirements li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #f8f8f2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:hover {
+            background: #f9f9f9;
+        }
+
+        table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .installation-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            counter-increment: step-counter;
+        }
+
+        .installation-steps {
+            counter-reset: step-counter;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: white;
+            color: #667eea;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.3em;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .step h4 {
+            color: white;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .alert {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .alert strong {
+            color: #856404;
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .tech-item {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .tech-item strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 10px 0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .footer-section h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .footer-section p {
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            font-size: 1.2em;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 99;
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .scroll-to-top.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            header p {
+                font-size: 1em;
+            }
+
+            nav ul {
+                flex-direction: column;
+            }
+
+            nav a {
+                border-bottom: none;
+                border-left: 3px solid transparent;
+                padding-left: 20px;
+            }
+
+            nav a:hover {
+                border-left-color: #667eea;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .installation-steps {
+                grid-template-columns: 1fr;
+            }
+
+            pre {
+                font-size: 0.8em;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Sistema de Gestión de Inventario</h1>
+        <p>Solución integral para el control y gestión eficiente de inventarios</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#descripcion">Descripción</a></li>
+            <li><a href="#caracteristicas">Características</a></li>
+            <li><a href="#requisitos">Requisitos</a></li>
+            <li><a href="#instalacion">Instalación</a></li>
+            <li><a href="#uso">Uso</a></li>
+            <li><a href="#tecnologias">Tecnologías</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <!-- Descripción -->
+        <section id="descripcion">
+            <h2>Descripción del Proyecto</h2>
+            <p>Sistema integral de gestión de inventario desarrollado en Python que permite controlar existencias de productos, registrar movimientos (entradas y salidas), generar reportes y almacenar la información de manera persistente. El sistema simula un entorno real de control de inventario, aplicando lógica de programación, estructuras de datos, validaciones y manejo de errores.</p>
+        </section>
+
+        <!-- Características -->
+        <section id="caracteristicas">
+            <h2>Características Principales</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>Registrar Productos</h4>
+                    <p>Agregar nuevos productos con ID único, nombre, precio y stock inicial</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Mostrar Productos</h4>
+                    <p>Visualizar lista completa de productos con detalles actualizados</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Entrada de Productos</h4>
+                    <p>Incrementar el stock de productos existentes</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Salida de Productos</h4>
+                    <p>Reducir el stock con validaciones de disponibilidad</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Generar Reportes</h4>
+                    <p>Crear reportes detallados del inventario con valor total</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Guardar Datos</h4>
+                    <p>Persistencia de información en formato JSON</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Eliminar Datos</h4>
+                    <p>Limpiar completamente el inventario con confirmación</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Alertas de Stock</h4>
+                    <p>Notificaciones cuando el stock está bajo (≤5 unidades)</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Menú Interactivo</h4>
+                    <p>Interfaz de usuario intuitiva y fácil de usar</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Requisitos -->
+        <section id="requisitos">
+            <h2>Requisitos del Sistema</h2>
+            
+            <div class="requirements">
+                <h4>Software Requerido</h4>
+                <ul>
+                    <li><strong>Python:</strong> 3.10 o superior (para soporte de match-case)</li>
+                    <li><strong>Sistema Operativo:</strong> Windows, macOS o Linux</li>
+                    <li><strong>Terminal:</strong> CMD, PowerShell, Bash o similar</li>
+                </ul>
+            </div>
+
+            <div class="requirements">
+                <h4>Dependencias</h4>
+                <ul>
+                    <li><code>json</code> - Para manejo de archivos JSON (librería estándar)</li>
+                    <li><code>os</code> - Para operaciones del sistema de archivos (librería estándar)</li>
+                </ul>
+            </div>
+
+            <div class="alert">
+                <strong>Nota:</strong> No requiere instalación adicional de paquetes. Todas las librerías utilizadas forman parte de la librería estándar de Python.
+            </div>
+        </section>
+
+        <!-- Instalación -->
+        <section id="instalacion">
+            <h2>Instalación y Configuración</h2>
+            
+            <div class="installation-steps">
+                <div class="step">
+                    <h4>Descargar o Clonar</h4>
+                    <p>Obtener el proyecto desde el repositorio</p>
+                </div>
+                <div class="step">
+                    <h4>Verificar Python</h4>
+                    <p>Asegurar que Python 3.10+ esté instalado</p>
+                </div>
+                <div class="step">
+                    <h4>Ejecutar</h4>
+                    <p>Iniciar la aplicación desde terminal</p>
+                </div>
+            </div>
+
+            <h3>Comandos de Instalación</h3>
+            
+            <h4>Paso 1: Descargar o Clonar el Proyecto</h4>
+            <pre><code># Si está en un repositorio Git
+git clone &lt;url-del-repositorio&gt;
+cd inventario</code></pre>
+
+            <h4>Paso 2: Verificar la Instalación de Python</h4>
+            <pre><code>python --version</code></pre>
+            <p><strong>Resultado esperado:</strong> Python 3.10 o superior</p>
+
+            <h4>Paso 3: Ejecutar la Aplicación</h4>
+            <pre><code>python inventario.py</code></pre>
+        </section>
+
+        <!-- Uso -->
+        <section id="uso">
+            <h2>Instrucciones de Uso</h2>
+
+            <h3>Menú Principal</h3>
+            <p>Al ejecutar el programa, se mostrará el siguiente menú interactivo:</p>
+            <pre><code>  |-------------------------------------------------|
+    |   SISTEMA DE GESTIÓN DE INVENTARIO           |
+    |----------------------------------------------|
+    |  1. Registrar producto                       |
+    |  2. Mostrar productos                        |
+    |  3. Entrada de producto (incrementar stock)  |
+    |  4. Salida de producto (reducir stock)       |
+    |  5. Generar reporte                          |
+    |  6. Guardar datos                            |
+    |  7. Eliminar datos                           |
+    |  8. Salir                                    |
+    |----------------------------------------------|</code></pre>
+
+            <h3>Descripción de Funciones</h3>
+
+            <h4>1. Registrar Producto</h4>
+            <ul>
+                <li>Solicita ID único del producto (debe ser numérico)</li>
+                <li>Solicita nombre del producto (no puede estar vacío)</li>
+                <li>Solicita precio (número positivo)</li>
+                <li>Solicita stock inicial (número no negativo)</li>
+                <li>Guarda automáticamente los datos</li>
+            </ul>
+
+            <h4>2. Mostrar Productos</h4>
+            <ul>
+                <li>Visualiza lista completa de productos con detalles</li>
+                <li>Muestra alertas si el stock está bajo (≤5 unidades)</li>
+            </ul>
+
+            <h4>3. Entrada de Producto</h4>
+            <ul>
+                <li>Incrementa el stock de un producto existente</li>
+                <li>Solicita ID del producto a ingresar</li>
+                <li>Muestra nuevo stock actualizado</li>
+            </ul>
+
+            <h4>4. Salida de Producto</h4>
+            <ul>
+                <li>Reduce el stock de un producto existente</li>
+                <li>Valida disponibilidad antes de realizar la operación</li>
+            </ul>
+
+            <h4>5. Generar Reporte</h4>
+            <ul>
+                <li>Crea un reporte formatado en tabla</li>
+                <li>Calcula y muestra el valor total del inventario</li>
+            </ul>
+
+            <h4>6. Guardar Datos</h4>
+            <ul>
+                <li>Guarda toda la información en archivo <code>inventario.json</code></li>
+                <li>Se ejecuta automáticamente en operaciones principales</li>
+            </ul>
+
+            <h4>7. Eliminar Datos</h4>
+            <ul>
+                <li>Solicita confirmación antes de eliminar</li>
+                <li>Elimina todos los productos del inventario</li>
+            </ul>
+
+            <h4>8. Salir</h4>
+            <ul>
+                <li>Cierra la aplicación de forma segura</li>
+                <li>Los datos permanecen guardados</li>
+            </ul>
+
+            <h3>Ejemplo de Uso</h3>
+            <pre><code>Seleccione una opción (1-8): 1
+--- REGISTRAR NUEVO PRODUCTO ---
+Ingrese el ID único del producto: 101
+Ingrese el nombre del producto: Laptop Dell
+Ingrese el precio del producto: 899.99
+Ingrese el stock inicial: 15
+¡Producto 'Laptop Dell' registrado con éxito!</code></pre>
+        </section>
+
+        <!-- Estructura del Proyecto -->
+        <section id="estructura">
+            <h2>Estructura del Proyecto</h2>
+            <pre><code>inventario/
+├── inventario.py          # Archivo principal de la aplicación
+├── inventario.json        # Base de datos (se genera automáticamente)
+├── README.md              # Documentación del proyecto
+└── index.html             # Presentación web</code></pre>
+
+            <h3>Manejo de Errores</h3>
+            <p>El sistema incluye validaciones exhaustivas para garantizar la integridad de los datos:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Error</th>
+                        <th>Descripción</th>
+                        <th>Solución</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>ID vacío</td>
+                        <td>El ID no puede estar vacío</td>
+                        <td>Ingrese un ID numérico válido</td>
+                    </tr>
+                    <tr>
+                        <td>ID no numérico</td>
+                        <td>El ID debe ser número</td>
+                        <td>Use solo dígitos (0-9)</td>
+                    </tr>
+                    <tr>
+                        <td>ID duplicado</td>
+                        <td>El ID ya existe en el sistema</td>
+                        <td>Ingrese un ID único diferente</td>
+                    </tr>
+                    <tr>
+                        <td>Precio negativo</td>
+                        <td>El precio no puede ser negativo</td>
+                        <td>Ingrese un valor positivo</td>
+                    </tr>
+                    <tr>
+                        <td>Stock insuficiente</td>
+                        <td>No hay suficiente stock para la salida</td>
+                        <td>Reduzca la cantidad requerida</td>
+                    </tr>
+                    <tr>
+                        <td>Producto no existe</td>
+                        <td>El ID del producto no existe</td>
+                        <td>Verifique el ID e intente de nuevo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Tecnologías -->
+        <section id="tecnologias">
+            <h2>Tecnologías Utilizadas</h2>
+            
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <strong>Lenguaje</strong>
+                    <p>Python 3.10+</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Paradigma</strong>
+                    <p>Programación Estructurada/Imperativa</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Almacenamiento</strong>
+                    <p>JSON (formato de texto)</p>
+                </div>
+                <div class="tech-item">
+                    <strong>Control de Flujo</strong>
+                    <p>Match-Case (Python 3.10+)</p>
+                </div>
+            </div>
+
+            <h3>Conceptos de Programación Aplicados</h3>
+            <ul>
+                <li>Estructuras de datos (diccionarios, listas)</li>
+                <li>Funciones y modularización</li>
+                <li>Bucles (<code>while</code>, <code>for</code>)</li>
+                <li>Sentencias condicionales (<code>match-case</code>, <code>if-elif</code>)</li>
+                <li>Validación de entrada de usuario</li>
+                <li>Manejo de excepciones (<code>try-except</code>)</li>
+                <li>Persistencia de datos (JSON)</li>
+                <li>Operaciones con archivos</li>
+                <li>Interfaces de usuario en consola</li>
+                <li>Cálculos matemáticos (suma, multiplicación)</li>
+            </ul>
+
+            <h3>Consideraciones de Seguridad</h3>
+            <ul>
+                <li>Los datos se guardan automáticamente</li>
+                <li>Confirmación requerida para eliminar datos</li>
+                <li>Validación exhaustiva de entrada de usuario</li>
+                <li>Manejo seguro de excepciones</li>
+                <li>Codificación UTF-8 para caracteres especiales</li>
+            </ul>
+        </section>
+
+        <!-- Notas Importantes -->
+        <section id="notas">
+            <h2>Notas Importantes</h2>
+            
+            <div class="requirements">
+                <ul>
+                    <li><strong>Python 3.10+:</strong> El proyecto utiliza match-case que requiere Python 3.10 o superior</li>
+                    <li><strong>Primera ejecución:</strong> Si es la primera vez, el sistema creará el archivo inventario.json automáticamente</li>
+                    <li><strong>Datos persistentes:</strong> Los datos se guardan en inventario.json y se cargan al iniciar</li>
+                    <li><strong>Validaciones:</strong> Todas las entradas de usuario son validadas</li>
+                    <li><strong>Caracteres especiales:</strong> El sistema soporta caracteres acentuados (UTF-8)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Contacto -->
+        <section id="contacto">
+            <h2>Información del Proyecto</h2>
+            
+            <table>
+                <tbody>
+                    <tr>
+                        <td><strong>Tipo:</strong></td>
+                        <td>Sistema de Gestión de Inventario</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Versión:</strong></td>
+                        <td>1.0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Estado:</strong></td>
+                        <td>Completo y Funcional</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Última Actualización:</strong></td>
+                        <td>Junio 2026</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Autor:</strong></td>
+                        <td>[Tu Nombre Aquí]</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Institución:</strong></td>
+                        <td>DLP-ITCA</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Licencia</h3>
+            <p>Este proyecto es de código abierto y está disponible para propósitos educativos.</p>
+
+            <h3>Contribuciones</h3>
+            <p>Las sugerencias y mejoras son bienvenidas. Siéntete libre de hacer fork del proyecto y enviar pull requests.</p>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-section">
+                    <h4>Proyecto</h4>
+                    <p>Sistema de Gestión de Inventario desarrollado como proyecto final del programa DLP-ITCA con Python 3.10+</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Características</h4>
+                    <p>Gestión completa de inventario, persistencia de datos en JSON, validaciones exhaustivas y menú interactivo</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Tecnologías</h4>
+                    <p>Python 3.10+, JSON, Match-Case, Programación Estructurada</p>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #444; padding-top: 20px;">
+                <p>&copy; 2026 Sistema de Gestión de Inventario. Todos los derechos reservados.</p>
+                <p>Desarrollado con propósitos educativos - DLP-ITCA</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-to-top" id="scrollToTop">↑</button>
+
+    <script>
+        // Smooth scrolling para los enlaces de navegación
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Botón para volver al inicio
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Animación de entrada para las secciones
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
